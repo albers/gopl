@@ -6,10 +6,16 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"regexp"
 )
+
+const defaultScheme = "http://"
 
 func main() {
 	for _, url := range os.Args[1:] {
+		if match, _ := regexp.MatchString("^https?://", url); !match {
+			url = defaultScheme + url
+		}
 		resp, err := http.Get(url)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "fetch: %v\n", err)
